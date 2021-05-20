@@ -131,6 +131,12 @@
         gtag("event", "exception", {
           description: "General",
           errorId: "000-0000-000",
+          apiUrl: "dev.api.jsm.com.br",
+          errormessage: "Proproiedade blablabla obrigatoria",
+          requestParams: {
+            prop: 1,
+            prop2: 3,
+          },
           customPage: window.location.utl,
         });
       };
@@ -139,7 +145,13 @@
         gtag("event", "exception", {
           description: "FATAL ERROR",
           errorId: "111-1111-111",
+          apiUrl: "ww.www.wwww.www.",
           customPage: window.location.utl,
+          errormessage: "Ocorreu um erro ao processar a requisicao",
+          requestParams: {
+            prop3: 23,
+            prop2: 3,
+          },
           fatal: true, // set to true if the error is fatal
         });
       };
