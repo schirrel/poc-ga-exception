@@ -19,120 +19,17 @@
 
       gtag("config", "G-ZNWHZ7P8QC");
     </script>
-
-    <!-- Google Analytics -->
-    <script>
-      (function (i, s, o, g, r, a, m) {
-        i["GoogleAnalyticsObject"] = r;
-        (i[r] =
-          i[r] ||
-          function () {
-            (i[r].q = i[r].q || []).push(arguments);
-          }),
-          (i[r].l = 1 * new Date());
-        (a = s.createElement(o)), (m = s.getElementsByTagName(o)[0]);
-        a.async = 1;
-        a.src = g;
-        m.parentNode.insertBefore(a, m);
-      })(
-        window,
-        document,
-        "script",
-        "https://www.google-analytics.com/analytics.js",
-        "ga"
-      );
-
-      ga("create", "G-ZNWHZ7P8QC", "auto");
-      ga("send", "pageview");
-    </script>
-    <!-- End Google Analytics -->
   </head>
   <body>
     <button type="button" id="exception">exception</button>
     <button type="button" id="fatal">fatal</button>
 
     <script>
-      /**
-       * Send JavaScript error information to Google Analytics.
-       *
-       * @param  {Window} window A reference to the "window".
-       * @return {void}
-       * @author Philippe Sawicki <https://github.com/philsawicki>
-       */
-      (function (window) {
-        // Retain a reference to the previous global error handler, in case it has been set:
-        var originalWindowErrorCallback = window.onerror;
-
-        /**
-         * Log any script error to Google Analytics.
-         *
-         * Third-party scripts without CORS will only provide "Script Error." as an error message.
-         *
-         * @param  {String}           errorMessage Error message.
-         * @param  {String}           url          URL where error was raised.
-         * @param  {Number}           lineNumber   Line number where error was raised.
-         * @param  {Number|undefined} columnNumber Column number for the line where the error occurred.
-         * @param  {Object|undefined} errorObject  Error Object.
-         * @return {Boolean}                       When the function returns true, this prevents the
-         *                                         firing of the default event handler.
-         */
-        window.onerror = function customErrorHandler(
-          errorMessage,
-          url,
-          lineNumber,
-          columnNumber,
-          errorObject
-        ) {
-          // Send error details to Google Analytics, if the library is already available:
-          if (typeof ga === "function") {
-            // In case the "errorObject" is available, use its data, else fallback
-            // on the default "errorMessage" provided:
-            var exceptionDescription = errorMessage;
-            if (
-              typeof errorObject !== "undefined" &&
-              typeof errorObject.message !== "undefined"
-            ) {
-              exceptionDescription = errorObject.message;
-            }
-
-            // Format the message to log to Analytics (might also use "errorObject.stack" if defined):
-            exceptionDescription +=
-              " @ " + url + ":" + lineNumber + ":" + columnNumber;
-
-            gtag("send", "exception", {
-              description: "FATAL ERROR",
-              fatal: true, // set to true if the error is fatalÎ,
-              globalHander: true,
-              errorId: "blablabla",
-              customPage: window.location.utl,
-              appName: "Application_Name",
-              appVersion: "1.0",
-            });
-          }
-
-          // If the previous "window.onerror" callback can be called, pass it the data:
-          if (typeof originalWindowErrorCallback === "function") {
-            return originalWindowErrorCallback(
-              errorMessage,
-              url,
-              lineNumber,
-              columnNumber,
-              errorObject
-            );
-          }
-          // Otherwise, Let the default handler run:
-          return false;
-        };
-      })(window);
-
-      // Generate an error, for demonstration purposes:
-
       document.querySelector("#exception").onclick = () => {
         gtag("event", "exception", {
-          description: "General",
           errorId: "000-0000-000",
           apiUrl: "dev.api.jsm.com.br",
-          errormessage: "Proproiedade blablabla obrigatoria",
+          description: "Proproiedade blablabla obrigatoria",
           requestParams: {
             prop: 1,
             prop2: 3,
@@ -143,11 +40,10 @@
 
       document.querySelector("#fatal").onclick = () => {
         gtag("event", "exception", {
-          description: "FATAL ERROR",
           errorId: "111-1111-111",
           apiUrl: "ww.www.wwww.www.",
           customPage: window.location.utl,
-          errormessage: "Ocorreu um erro ao processar a requisicao",
+          description: "Ocorreu um erro ao processar a requisicao",
           requestParams: {
             prop3: 23,
             prop2: 3,
@@ -155,12 +51,6 @@
           fatal: true, // set to true if the error is fatal
         });
       };
-
-      gtag.exception({ description: "teste‰", fatal: true });
-
-      setTimeout(() => {
-        throw new Error("teste exception");
-      }, 500);
     </script>
   </body>
 </html>
