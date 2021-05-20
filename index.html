@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>POC GA EXCEPTION</title>
+    <title>POC GTAG EXCEPTION</title>
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script
       async
@@ -21,20 +21,19 @@
     </script>
   </head>
   <body>
-    <button type="button" id="exception">exception</button>
-    <button type="button" id="fatal">fatal</button>
+    <button type="button" id="exception">Example 1</button>
+    <button type="button" id="fatal">Example 2</button>
 
     <script>
       document.querySelector("#exception").onclick = () => {
         gtag("event", "exception", {
           errorId: "000-0000-000",
-          apiUrl: "dev.api.jsm.com.br",
+          apiUrl: "dev.api.com.br",
           description: "Proproiedade blablabla obrigatoria",
-          requestParams: {
+          requestParams: JSON.stringify({
             prop: 1,
             prop2: 3,
-          },
-          customPage: window.location.utl,
+          }),
         });
       };
 
@@ -42,12 +41,11 @@
         gtag("event", "exception", {
           errorId: "111-1111-111",
           apiUrl: "ww.www.wwww.www.",
-          customPage: window.location.utl,
           description: "Ocorreu um erro ao processar a requisicao",
-          requestParams: {
+          requestParams: JSON.stringify({
             prop3: 23,
             prop2: 3,
-          },
+          }),
           fatal: true, // set to true if the error is fatal
         });
       };
