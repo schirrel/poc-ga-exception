@@ -48,11 +48,8 @@
     <!-- End Google Analytics -->
   </head>
   <body>
-    <button type="button" id="teste-1">pageview</button>
-    <button type="button" id="teste-2">pageview 2</button>
-    <button type="button" id="teste-3">General</button>
-    <button type="button" id="teste-4">Fatal</button>
-    <button type="button" id="teste-5">eventCategory</button>
+    <button type="button" id="exception">exception</button>
+    <button type="button" id="fatal">fatal</button>
 
     <script>
       /**
@@ -102,9 +99,12 @@
             exceptionDescription +=
               " @ " + url + ":" + lineNumber + ":" + columnNumber;
 
-            ga("send", "exception", {
-              exDescription: exceptionDescription,
-              exFatal: false, // Some Error types might be considered as fatal.
+            gtag("send", "exception", {
+              description: "FATAL ERROR",
+              fatal: true, // set to true if the error is fatalÎ,
+              globalHander: true,
+              errorId: "blablabla",
+              customPage: window.location.utl,
               appName: "Application_Name",
               appVersion: "1.0",
             });
@@ -126,56 +126,29 @@
       })(window);
 
       // Generate an error, for demonstration purposes:
-      //throw new Error('Crash!');
 
-      ga("send", "pageview");
-
-      document.querySelector("#teste-1").onclick = () => {
-        ga("send", "pageview");
-      };
-
-      document.querySelector("#teste-2").onclick = () => {
-        ga("send", {
-          hitType: "pageview",
-          page: "/index",
-        });
-      };
-
-      document.querySelector("#teste-3").onclick = () => {
-        ga("send", "exception", {
-          exDescription: "General",
-        });
+      document.querySelector("#exception").onclick = () => {
         gtag("event", "exception", {
-          description: "General"
+          description: "General",
+          errorId: "000-0000-000",
+          customPage: window.location.utl,
         });
       };
 
-      document.querySelector("#teste-4").onclick = () => {
-        console.log("hi");
-        ga("send", "exception", {
-          exDescription: "FATAL ERROR",
-          exFatal: true,
-        });
+      document.querySelector("#fatal").onclick = () => {
         gtag("event", "exception", {
           description: "FATAL ERROR",
+          errorId: "111-1111-111",
+          customPage: window.location.utl,
           fatal: true, // set to true if the error is fatal
         });
       };
 
-      document.querySelector("#teste-5").onclick = () => {
-        ga("send", "event", {
-          eventCategory: "Error",
-          eventAction: "Action",
-        });
-      };
-
-      ga("send", "exception", {
-        exDescription: "Sample Error",
-        exFatal: false,
-      });
-
-      ga.exception({ description: "teste‰", fatal: true });
       gtag.exception({ description: "teste‰", fatal: true });
+
+      setTimeout(() => {
+        throw new Error("teste exception");
+      }, 500);
     </script>
   </body>
 </html>
