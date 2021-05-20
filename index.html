@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>POC GA EXCEPTION</title>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-7JF129CY7H"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-7JF129CY7H");
+    </script>
+
+    <!-- Google Analytics -->
+    <script>
+      (function (i, s, o, g, r, a, m) {
+        i["GoogleAnalyticsObject"] = r;
+        (i[r] =
+          i[r] ||
+          function () {
+            (i[r].q = i[r].q || []).push(arguments);
+          }),
+          (i[r].l = 1 * new Date());
+        (a = s.createElement(o)), (m = s.getElementsByTagName(o)[0]);
+        a.async = 1;
+        a.src = g;
+        m.parentNode.insertBefore(a, m);
+      })(
+        window,
+        document,
+        "script",
+        "https://www.google-analytics.com/analytics.js",
+        "ga"
+      );
+
+      ga("create", "G-7JF129CY7H", "auto");
+      ga("send", "pageview");
+    </script>
+    <!-- End Google Analytics -->
+  </head>
+  <body>
+    <button type="button" id="teste-1">pageview</button>
+    <button type="button" id="teste-2">pageview 2</button>
+    <button type="button" id="teste-3">General</button>
+    <button type="button" id="teste-4">Fatal</button>
+    <button type="button" id="teste-5">eventCategory</button>
+
+    <script>
+      /**
+       * Send JavaScript error information to Google Analytics.
+       *
+       * @param  {Window} window A reference to the "window".
+       * @return {void}
+       * @author Philippe Sawicki <https://github.com/philsawicki>
+       */
+      (function (window) {
+        // Retain a reference to the previous global error handler, in case it has been set:
+        var originalWindowErrorCallback = window.onerror;
+
+        /**
+         * Log any script error to Google Analytics.
+         *
+         * Third-party scripts without CORS will only provide "Script Error." as an error message.
+         *
+         * @param  {String}           errorMessage Error message.
+         * @param  {String}           url          URL where error was raised.
+         * @param  {Number}           lineNumber   Line number where error was raised.
+         * @param  {Number|undefined} columnNumber Column number for the line where the error occurred.
+         * @param  {Object|undefined} errorObject  Error Object.
+         * @return {Boolean}                       When the function returns true, this prevents the
+         *                                         firing of the default event handler.
+         */
+        window.onerror = function customErrorHandler(
+          errorMessage,
+          url,
+          lineNumber,
+          columnNumber,
+          errorObject
+        ) {
+          // Send error details to Google Analytics, if the library is already available:
+          if (typeof ga === "function") {
+            // In case the "errorObject" is available, use its data, else fallback
+            // on the default "errorMessage" provided:
+            var exceptionDescription = errorMessage;
+            if (
+              typeof errorObject !== "undefined" &&
+              typeof errorObject.message !== "undefined"
+            ) {
+              exceptionDescription = errorObject.message;
+            }
+
+            // Format the message to log to Analytics (might also use "errorObject.stack" if defined):
+            exceptionDescription +=
+              " @ " + url + ":" + lineNumber + ":" + columnNumber;
+
+            ga("send", "exception", {
+              exDescription: exceptionDescription,
+              exFatal: false, // Some Error types might be considered as fatal.
+              appName: "Application_Name",
+              appVersion: "1.0",
+            });
+          }
+
+          // If the previous "window.onerror" callback can be called, pass it the data:
+          if (typeof originalWindowErrorCallback === "function") {
+            return originalWindowErrorCallback(
+              errorMessage,
+              url,
+              lineNumber,
+              columnNumber,
+              errorObject
+            );
+          }
+          // Otherwise, Let the default handler run:
+          return false;
+        };
+      })(window);
+
+      // Generate an error, for demonstration purposes:
+      //throw new Error('Crash!');
+
+      ga("send", "pageview");
+
+      document.querySelector("#teste-1").onclick = () => {
+        ga("send", "pageview");
+      };
+
+      document.querySelector("#teste-2").onclick = () => {
+        ga("send", {
+          hitType: "pageview",
+          page: "/index",
+        });
+      };
+
+      document.querySelector("#teste-3").onclick = () => {
+        ga("send", "exception", {
+          exDescription: "General",
+        });
+      };
+
+      document.querySelector("#teste-4").onclick = () => {
+        console.log("hi");
+        ga("send", "exception", {
+          exDescription: "FATAL ERROR",
+          exFatal: true,
+        });
+      };
+
+      document.querySelector("#teste-5").onclick = () => {
+        ga("send", "event", {
+          eventCategory: "Error",
+          eventAction: "Action",
+        });
+      };
+
+      ga("send", "exception", {
+        exDescription: "Sample Error",
+        exFatal: false,
+      });
+
+      ga.exception({ description: "teste‰", fatal: true });
+    </script>
+  </body>
+</html>
